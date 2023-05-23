@@ -7,12 +7,73 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Username"
+        tools:layout_editor_absoluteX="87dp"
+        tools:layout_editor_absoluteY="36dp" />
+
+    <TextView
+        android:id="@+id/dlcCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DLC"
+        tools:layout_editor_absoluteX="176dp"
+        tools:layout_editor_absoluteY="243dp" />
+
+    <TextView
+        android:id="@+id/gameCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Games"
+        tools:layout_editor_absoluteX="174dp"
+        tools:layout_editor_absoluteY="124dp" />
+
+    <Button
+        android:id="@+id/gamesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="gaems"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.665"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.405" />
+
+    <TextView
+        android:id="@+id/dateSynch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Synchdate"
+        tools:layout_editor_absoluteX="166dp"
+        tools:layout_editor_absoluteY="356dp" />
+
+    <Button
+        android:id="@+id/dlcButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DLC"
+        app:layout_constraintBottom_toTopOf="@+id/gamesButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/synchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="synch"
+        tools:layout_editor_absoluteX="95dp"
+        tools:layout_editor_absoluteY="458dp" />
+
+    <Button
+        android:id="@+id/clearDataButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="clearData"
+        tools:layout_editor_absoluteX="232dp"
+        tools:layout_editor_absoluteY="458dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
