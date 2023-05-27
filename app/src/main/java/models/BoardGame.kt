@@ -6,6 +6,6 @@ package models
         var yearPublished: Int,
         var image: String,
         var thumbnail: String,
-        var bggId: Long
+        var bggId: Int
     )
 

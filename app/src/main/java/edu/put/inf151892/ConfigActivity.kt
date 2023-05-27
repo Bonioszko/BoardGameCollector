@@ -1,12 +1,23 @@
 package edu.put.inf151892
 
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
+import android.util.Log
+import android.util.Xml
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import android.database.sqlite.SQLiteDatabase
+import android.widget.Toast
 import com.google.android.material.internal.ContextUtils.getActivity
+
+
+import models.Boardgame
+import models.XmlParserTask
 
 
 class ConfigActivity : AppCompatActivity() {
@@ -23,12 +34,61 @@ class ConfigActivity : AppCompatActivity() {
         usernameButton = findViewById(R.id.usernameButton)
         usernameButton.setOnClickListener{
             val username = inputUsername.text.toString()
+            Log.d("mian",username)
             cache.edit().putString("username",username).apply()
             cache.edit().putBoolean("confDone",true).apply()
             val db = DBHandler(this)
+
+            Log.d("msf",cache.getString("username", "").toString())
+            var url  = "https://boardgamegeek.com/xmlapi2/collection?username=" + cache.getString(
+            "username",
+            ""
+        ) +
+                "&subtype=boardgame&excludesubtype=boardgameexpansion"
+            val boardgamesList =  XmlParserTask().execute(url)
+            if (boardgamesList.get().isEmpty()){
+                Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
+
+            }
+            else{
+                var id = 0
+                for (boardgame in boardgamesList.get()){
+
+                    db.addBoardGame(
+                        Boardgame(
+                            id = id,
+                            title = boardgame.title,
+                            originalTitle = boardgame.originalTitle,
+                            yearPublished = boardgame.yearPublished,
+                            //te dwa ponizej do zmiany
+                            image = " ",
+                            thumbnail = " ",
+                            bggId = boardgame.bggId
+
+
+                        )
+                    )
+                    id+=1
+                    Log.d("msf",id.toString())
+                }
+
+                db.close()
+
+                val boardgame =db.getAllBoardGames()
+                Log.d("data", boardgame[1].title)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+
+            }
+
+
         }
 
 
 
+
+
+
     }
+
 }

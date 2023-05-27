@@ -1,7 +1,9 @@
 package edu.put.inf151892
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import models.Boardgame
@@ -49,7 +51,7 @@ class DBHandler  // creating a constructor for our database handler.
         values.put("title", boardgame.title)
         values.put("id", boardgame.id)
         values.put("bgg_id", boardgame.bggId)
-        values.put("originalTitle", boardgame.originalTitle)
+        values.put("original_title", boardgame.originalTitle)
         values.put("year_published",boardgame.yearPublished)
         val db = this.writableDatabase
         db.insert("boardgame",null,values)
@@ -59,7 +61,24 @@ class DBHandler  // creating a constructor for our database handler.
         val db = this.writableDatabase
         db.delete("boardgame",null,null)
     }
-
+    @SuppressLint("Range")
+    fun getAllBoardGames(): List<Boardgame> {
+        val db = this.writableDatabase
+        val boardGames = mutableListOf<Boardgame>()
+        val cursor: Cursor = db.rawQuery("SELECT * FROM boardgame", null)
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val title = cursor.getString(cursor.getColumnIndex("title"))
+            val originalTitle = cursor.getString(cursor.getColumnIndex("original_title"))
+            val yearPublished = cursor.getInt(cursor.getColumnIndex("year_published"))
+            val bggId = cursor.getInt(cursor.getColumnIndex("bgg_id"))
+            //zmienic image i thumbnail
+            val boardGame = Boardgame(id, title, originalTitle, yearPublished," "," ", bggId)
+            boardGames.add(boardGame)
+        }
+        cursor.close()
+        return boardGames
+    }
 
 
 }
