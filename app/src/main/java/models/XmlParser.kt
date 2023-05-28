@@ -82,7 +82,7 @@ class XmlParserTask : AsyncTask<String, Void, List<Boardgame>>() {
             val itemNode = itemList.item(i)
             if (itemNode.nodeType == org.w3c.dom.Node.ELEMENT_NODE) {
                 val elem = itemNode as org.w3c.dom.Element
-
+                val id = elem.getAttribute("objectid").toInt()
                 val nameElement = elem.getElementsByTagName("name").item(0)
                 val name = nameElement?.textContent ?: ""
 
@@ -96,13 +96,13 @@ class XmlParserTask : AsyncTask<String, Void, List<Boardgame>>() {
                 val thumbnail = thumbnailElement?.textContent ?: ""
 
                 val boardGame = Boardgame(
-                    elem.getAttribute("objectid").toInt(),
+                    id,
                     name,
                     name,
                     yearPublished,
                     image,
                     thumbnail,
-                    elem.getAttribute("objectid").toInt(),
+                    id,
 
                 )
                 boardGames.add(boardGame)

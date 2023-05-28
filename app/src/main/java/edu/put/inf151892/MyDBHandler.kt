@@ -37,6 +37,15 @@ class DBHandler  // creating a constructor for our database handler.
         db?.execSQL(CREATE_TABLE_BOARDGAME)
 
 
+        val CREATE_TABLE_EXTENSIONS =  "CREATE TABLE IF NOT EXISTS extension " +
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "title TEXT, " +
+                "original_title TEXT, " +
+                "year_published INTEGER, " +
+                "bgg_id INTEGER) "
+        db?.execSQL(CREATE_TABLE_EXTENSIONS)
+
+
     }
 
 
@@ -49,7 +58,18 @@ class DBHandler  // creating a constructor for our database handler.
     fun addBoardGame(boardgame: Boardgame){
         val values = ContentValues()
         values.put("title", boardgame.title)
-        values.put("id", boardgame.id)
+
+        values.put("bgg_id", boardgame.bggId)
+        values.put("original_title", boardgame.originalTitle)
+        values.put("year_published",boardgame.yearPublished)
+        val db = this.writableDatabase
+        db.insert("boardgame",null,values)
+        db.close()
+    }
+    fun addExtension(boardgame: Boardgame){
+        val values = ContentValues()
+        values.put("title", boardgame.title)
+
         values.put("bgg_id", boardgame.bggId)
         values.put("original_title", boardgame.originalTitle)
         values.put("year_published",boardgame.yearPublished)
@@ -60,6 +80,10 @@ class DBHandler  // creating a constructor for our database handler.
     fun deleteAllBoardGames(){
         val db = this.writableDatabase
         db.delete("boardgame",null,null)
+    }
+    fun deleteAllExtensions(){
+        val db = this.writableDatabase
+        db.delete("extension",null,null)
     }
     @SuppressLint("Range")
     fun getAllBoardGames(): List<Boardgame> {
@@ -78,6 +102,25 @@ class DBHandler  // creating a constructor for our database handler.
         }
         cursor.close()
         return boardGames
+    }
+
+    @SuppressLint("Range")
+    fun getAllExtensions(): List<Boardgame> {
+        val db = this.writableDatabase
+        val extensions = mutableListOf<Boardgame>()
+        val cursor: Cursor = db.rawQuery("SELECT * FROM extension", null)
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndex("id"))
+            val title = cursor.getString(cursor.getColumnIndex("title"))
+            val originalTitle = cursor.getString(cursor.getColumnIndex("original_title"))
+            val yearPublished = cursor.getInt(cursor.getColumnIndex("year_published"))
+            val bggId = cursor.getInt(cursor.getColumnIndex("bgg_id"))
+            //zmienic image i thumbnail
+            val boardGame = Boardgame(id, title, originalTitle, yearPublished," "," ", bggId)
+            extensions.add(boardGame)
+        }
+        cursor.close()
+        return extensions
     }
 
 

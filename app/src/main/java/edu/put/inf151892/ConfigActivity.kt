@@ -46,12 +46,19 @@ class ConfigActivity : AppCompatActivity() {
         ) +
                 "&subtype=boardgame&excludesubtype=boardgameexpansion"
             val boardgamesList =  XmlParserTask().execute(url)
+            var urlExtensions  = "https://boardgamegeek.com/xmlapi2/collection?username=" + cache.getString(
+            "username",
+            ""
+        ) +
+                "&subtype=boardgameexpansion"
+            val extensionsList =  XmlParserTask().execute(urlExtensions)
             if (boardgamesList.get().isEmpty()){
                 Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
 
             }
             else{
                 var id = 0
+                var idExtension =0
                 for (boardgame in boardgamesList.get()){
 
                     db.addBoardGame(
@@ -69,13 +76,32 @@ class ConfigActivity : AppCompatActivity() {
                         )
                     )
                     id+=1
-                    Log.d("msf",id.toString())
+
                 }
+                for (extension in extensionsList.get()){
+                    db.addExtension(
+                        Boardgame(
+                            id = id,
+                            title = extension.title,
+                            originalTitle = extension.originalTitle,
+                            yearPublished = extension.yearPublished,
+                            //te dwa ponizej do zmiany
+                            image = " ",
+                            thumbnail = " ",
+                            bggId = extension.bggId
+
+
+                        )
+                    )
+                    idExtension+=1
+
+                }
+
 
                 db.close()
 
-                val boardgame =db.getAllBoardGames()
-                Log.d("data", boardgame[1].title)
+                //val boardgame =db.getAllBoardGames()
+                //Log.d("data", boardgame[1].title)
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
 
