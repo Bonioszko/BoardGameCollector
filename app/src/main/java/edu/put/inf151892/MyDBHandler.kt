@@ -29,7 +29,7 @@ class DBHandler  // creating a constructor for our database handler.
     override fun onCreate(db: SQLiteDatabase) {
 
         val CREATE_TABLE_BOARDGAME = "CREATE TABLE IF NOT EXISTS boardgame " +
-                "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "(id INTEGER  PRIMARY KEY AUTOINCREMENT, " +
                 "title TEXT, " +
                 "original_title TEXT, " +
                 "year_published INTEGER, " +
@@ -37,13 +37,13 @@ class DBHandler  // creating a constructor for our database handler.
         db?.execSQL(CREATE_TABLE_BOARDGAME)
 
 
-        val CREATE_TABLE_EXTENSIONS =  "CREATE TABLE IF NOT EXISTS extension " +
+        val CREATE_TABLE_EXTENSION =  "CREATE TABLE IF NOT EXISTS extension " +
                 "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "title TEXT, " +
                 "original_title TEXT, " +
                 "year_published INTEGER, " +
                 "bgg_id INTEGER) "
-        db?.execSQL(CREATE_TABLE_EXTENSIONS)
+        db?.execSQL(CREATE_TABLE_EXTENSION)
 
 
     }
@@ -53,6 +53,7 @@ class DBHandler  // creating a constructor for our database handler.
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // this method is called to check if the table exists already.
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
+        db.execSQL("DROP TABLE IF EXISTS " +"extension")
         onCreate(db)
     }
     fun addBoardGame(boardgame: Boardgame){
@@ -66,15 +67,14 @@ class DBHandler  // creating a constructor for our database handler.
         db.insert("boardgame",null,values)
         db.close()
     }
-    fun addExtension(boardgame: Boardgame){
+    fun addExtension(extension: Boardgame){
         val values = ContentValues()
-        values.put("title", boardgame.title)
-
-        values.put("bgg_id", boardgame.bggId)
-        values.put("original_title", boardgame.originalTitle)
-        values.put("year_published",boardgame.yearPublished)
+        values.put("title", extension.title)
+        values.put("bgg_id", extension.bggId)
+        values.put("original_title", extension.originalTitle)
+        values.put("year_published",extension.yearPublished)
         val db = this.writableDatabase
-        db.insert("boardgame",null,values)
+        db.insert("extension",null,values)
         db.close()
     }
     fun deleteAllBoardGames(){

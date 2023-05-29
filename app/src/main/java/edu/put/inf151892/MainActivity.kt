@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         val cache = getSharedPreferences("cache", Context.MODE_PRIVATE)
         val db = DBHandler(this)
         db.deleteAllBoardGames()
+        db.deleteAllExtensions()
         cache.edit().putBoolean("confDone",false).apply()
         finishAffinity()
     }

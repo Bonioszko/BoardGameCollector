@@ -2,42 +2,35 @@ package edu.put.inf151892
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.util.Xml
-import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import models.Boardgame
-
+import models.Boardgame_RecylerViewAdapter
 import models.XmlParserTask
-import org.w3c.dom.Element
-import org.xml.sax.InputSource
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.StringReader
-import java.net.HttpURLConnection
-import java.net.URL
-import javax.xml.parsers.DocumentBuilderFactory
 
 
 class ListGamesActivity : AppCompatActivity() {
-    private lateinit var Text: TextView
+
+    val listGames: MutableList<Boardgame> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_list_games)
-        Text = findViewById(R.id.textView2)
-        val url ="https://boardgamegeek.com/xmlapi2/collection?username=rahdo"
-        var text = XmlParserTask().execute(url)
+        val db = DBHandler(this)
+        var listOfGames = db.getAllBoardGames()
+        //val url ="https://boardgamegeek.com/xmlapi2/collection?username=rahdo"
+        //var text = XmlParserTask().execute(url)
+        val recyclerview = findViewById<RecyclerView>(R.id.RecyclerViewGames)
+        recyclerview.layoutManager = LinearLayoutManager(this)
+        val adapter = Boardgame_RecylerViewAdapter(listOfGames)
+        recyclerview.adapter = adapter
+    }
+    fun setUpGames(){
 
 
+    }
 
-
-
-        Text.text = text.get()[1].title
-
-
-    }}
+}
 
 //    private fun parseXml(xmlUrl:String): List<Boardgame> {
 //

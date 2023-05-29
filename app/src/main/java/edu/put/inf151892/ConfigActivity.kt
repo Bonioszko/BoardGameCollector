@@ -57,8 +57,8 @@ class ConfigActivity : AppCompatActivity() {
 
             }
             else{
-                var id = 0
-                var idExtension =0
+                var id= 0
+
                 for (boardgame in boardgamesList.get()){
 
                     db.addBoardGame(
@@ -77,31 +77,37 @@ class ConfigActivity : AppCompatActivity() {
                     )
                     id+=1
 
+
                 }
-                for (extension in extensionsList.get()){
-                    db.addExtension(
-                        Boardgame(
-                            id = id,
-                            title = extension.title,
-                            originalTitle = extension.originalTitle,
-                            yearPublished = extension.yearPublished,
-                            //te dwa ponizej do zmiany
-                            image = " ",
-                            thumbnail = " ",
-                            bggId = extension.bggId
+
+                    for (extension in extensionsList.get()){
+                        db.addExtension(
+                            Boardgame(
+                                id = 0,
+                                title = extension.title,
+                                originalTitle = extension.originalTitle,
+                                yearPublished = extension.yearPublished,
+                                //te dwa ponizej do zmiany
+                                image = " ",
+                                thumbnail = " ",
+                                bggId = extension.bggId
 
 
+                            )
                         )
-                    )
-                    idExtension+=1
+
+
+
+
+
 
                 }
 
 
                 db.close()
 
-                //val boardgame =db.getAllBoardGames()
-                //Log.d("data", boardgame[1].title)
+                val extension =db.getAllExtensions()
+
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
 
