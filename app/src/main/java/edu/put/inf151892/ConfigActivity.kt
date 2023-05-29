@@ -63,7 +63,7 @@ class ConfigActivity : AppCompatActivity() {
 
                     db.addBoardGame(
                         Boardgame(
-                            id = id,
+                            id = 0,
                             title = boardgame.title,
                             originalTitle = boardgame.originalTitle,
                             yearPublished = boardgame.yearPublished,
