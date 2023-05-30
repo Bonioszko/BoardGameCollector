@@ -1,5 +1,6 @@
 package edu.put.inf151892
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,14 @@ class DlcActivity : AppCompatActivity() {
             recyclerview.layoutManager = LinearLayoutManager(this)
             val adapter = Boardgame_RecylerViewAdapter(listOfExtensions)
             recyclerview.adapter = adapter
+            adapter.setOnItemClickListener(object :Boardgame_RecylerViewAdapter.onItemClickListener{
+                override fun onItemClick(position: Int) {
+                    val intent = Intent(this@DlcActivity, GameDetailsActivity::class.java)
+                    intent.putExtra("bggId",listOfExtensions[position].bggId )
+                    intent.putExtra("image", listOfExtensions[position].image)
+                    startActivity(intent)
+                }
+            })
 
     }
 }

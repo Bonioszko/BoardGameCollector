@@ -12,7 +12,7 @@ import models.BoardGameDetailsParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-class GameDetailsActivity : AppCompatActivity() {
+class DlcDetailsActivity : AppCompatActivity() {
     private lateinit var text:TextView
     private lateinit var image: ImageView
     private lateinit var numberOfPlayers: TextView
@@ -34,7 +34,7 @@ class GameDetailsActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val boardGameDetails = fetchBoardGameDetails(bggId.toString())
             text.text = boardGameDetails.name
-            Glide.with(this@GameDetailsActivity)
+            Glide.with(this@DlcDetailsActivity)
                 .load(imageBundle)
                 .apply(RequestOptions().centerCrop())
                 .into(image)

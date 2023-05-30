@@ -34,7 +34,7 @@ class ConfigActivity : AppCompatActivity() {
         usernameButton = findViewById(R.id.usernameButton)
         usernameButton.setOnClickListener{
             val username = inputUsername.text.toString()
-            Log.d("mian",username)
+
             cache.edit().putString("username",username).apply()
             cache.edit().putBoolean("confDone",true).apply()
             val db = DBHandler(this)
@@ -106,7 +106,7 @@ class ConfigActivity : AppCompatActivity() {
 
                 db.close()
 
-                val extension =db.getAllExtensions()
+                //val extension =db.getAllExtensions()
 
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

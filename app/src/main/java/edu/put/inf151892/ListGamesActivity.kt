@@ -28,6 +28,7 @@ class ListGamesActivity : AppCompatActivity() {
             override fun onItemClick(position: Int) {
                 val intent = Intent(this@ListGamesActivity, GameDetailsActivity::class.java)
                 intent.putExtra("bggId",listOfGames[position].bggId )
+                intent.putExtra("image", listOfGames[position].image)
                 startActivity(intent)
             }
         })
