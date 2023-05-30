@@ -68,8 +68,8 @@ class ConfigActivity : AppCompatActivity() {
                             originalTitle = boardgame.originalTitle,
                             yearPublished = boardgame.yearPublished,
                             //te dwa ponizej do zmiany
-                            image = " ",
-                            thumbnail = " ",
+                            image = boardgame.image,
+                            thumbnail = boardgame.thumbnail,
                             bggId = boardgame.bggId
 
 
@@ -88,8 +88,8 @@ class ConfigActivity : AppCompatActivity() {
                                 originalTitle = extension.originalTitle,
                                 yearPublished = extension.yearPublished,
                                 //te dwa ponizej do zmiany
-                                image = " ",
-                                thumbnail = " ",
+                                image = extension.image,
+                                thumbnail = extension.thumbnail,
                                 bggId = extension.bggId
 
 
