@@ -1,12 +1,12 @@
 package edu.put.inf151892
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import models.Boardgame
 import models.Boardgame_RecylerViewAdapter
-import models.XmlParserTask
 
 
 class ListGamesActivity : AppCompatActivity() {
@@ -24,11 +24,15 @@ class ListGamesActivity : AppCompatActivity() {
         recyclerview.layoutManager = LinearLayoutManager(this)
         val adapter = Boardgame_RecylerViewAdapter(listOfGames)
         recyclerview.adapter = adapter
+        adapter.setOnItemClickListener(object : Boardgame_RecylerViewAdapter.onItemClickListener{
+            override fun onItemClick(position: Int) {
+                val intent = Intent(this@ListGamesActivity, GameDetailsActivity::class.java)
+                intent.putExtra("bggId",listOfGames[position].bggId )
+                startActivity(intent)
+            }
+        })
     }
-    fun setUpGames(){
 
-
-    }
 
 }
 

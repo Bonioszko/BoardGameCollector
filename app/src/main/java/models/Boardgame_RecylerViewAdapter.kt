@@ -1,24 +1,31 @@
 package models
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import edu.put.inf151892.R
-import org.w3c.dom.Text
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 class Boardgame_RecylerViewAdapter(private val boardgameList: List<Boardgame>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private lateinit var mListener:onItemClickListener
+    interface  onItemClickListener{
+        fun onItemClick(position: Int){
+
+        }
+    }
+    fun setOnItemClickListener(listener: onItemClickListener){
+        mListener = listener
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_games, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view,mListener)
     }
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val boardgame = boardgameList[position]
@@ -38,10 +45,16 @@ class Boardgame_RecylerViewAdapter(private val boardgameList: List<Boardgame>) :
     override fun getItemCount(): Int{
         return boardgameList.size
     }
-    class ViewHolder(ItemView:View):RecyclerView.ViewHolder(ItemView){
+    class ViewHolder(ItemView:View, listener: onItemClickListener):RecyclerView.ViewHolder(ItemView){
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val numberInListView: TextView = itemView.findViewById(R.id.number_in_list)
         val titleGameView: TextView = itemView.findViewById(R.id.title_game)
         val yearOfPub: TextView = itemView.findViewById(R.id.year_of_pub)
+
+        init{
+            itemView.setOnClickListener {
+                listener.onItemClick(adapterPosition)
+            }
+        }
     }
 }
