@@ -35,7 +35,10 @@ class DBHandler  // creating a constructor for our database handler.
                 "year_published INTEGER, " +
                 "image TEXT,"+
                 "thumbnail TEXT,"+
-                "bgg_id INTEGER) "
+                "bgg_id INTEGER," +
+                "min_players INTEGER," +
+                "max_players INTEGER," +
+                "playing_time INTEGER) "
         db?.execSQL(CREATE_TABLE_BOARDGAME)
 
 
@@ -46,7 +49,10 @@ class DBHandler  // creating a constructor for our database handler.
                 "year_published INTEGER, " +
                 "image TEXT,"+
                 "thumbnail TEXT,"+
-                "bgg_id INTEGER) "
+                "bgg_id INTEGER," +
+                "min_players INTEGER," +
+                "max_players INTEGER," +
+                "playing_time INTEGER) "
         db?.execSQL(CREATE_TABLE_EXTENSION)
 
 
@@ -69,6 +75,9 @@ class DBHandler  // creating a constructor for our database handler.
         values.put("year_published",boardgame.yearPublished)
         values.put("image", boardgame.image)
         values.put("thumbnail", boardgame.thumbnail)
+        values.put("min_players", boardgame.minPlayers)
+        values.put("max_players", boardgame.maxPlayers)
+        values.put("playing_time", boardgame.playingTime)
         val db = this.writableDatabase
         db.insert("boardgame",null,values)
         db.close()
@@ -81,6 +90,9 @@ class DBHandler  // creating a constructor for our database handler.
         values.put("year_published",extension.yearPublished)
         values.put("image", extension.image)
         values.put("thumbnail", extension.thumbnail)
+        values.put("min_players", extension.minPlayers)
+        values.put("max_players", extension.maxPlayers)
+        values.put("playing_time", extension.playingTime)
         val db = this.writableDatabase
         db.insert("extension",null,values)
         db.close()
@@ -106,8 +118,11 @@ class DBHandler  // creating a constructor for our database handler.
             val bggId = cursor.getInt(cursor.getColumnIndex("bgg_id"))
             val image = cursor.getString(cursor.getColumnIndex("image"))
             val thumbnail = cursor.getString(cursor.getColumnIndex("thumbnail"))
+            val minPlayers = cursor.getInt(cursor.getColumnIndex("min_players"))
+            val maxPlayers = cursor.getInt(cursor.getColumnIndex("max_players"))
+            val playingTime = cursor.getInt(cursor.getColumnIndex("playing_time"))
             //zmienic image i thumbnail
-            val boardGame = Boardgame(id, title, originalTitle, yearPublished,image, thumbnail , bggId)
+            val boardGame = Boardgame(id, title, originalTitle, yearPublished,image, thumbnail , bggId, minPlayers,maxPlayers,playingTime)
             boardGames.add(boardGame)
         }
         cursor.close()
@@ -127,8 +142,11 @@ class DBHandler  // creating a constructor for our database handler.
             val bggId = cursor.getInt(cursor.getColumnIndex("bgg_id"))
             val image = cursor.getString(cursor.getColumnIndex("image"))
             val thumbnail = cursor.getString(cursor.getColumnIndex("thumbnail"))
+            val minPlayers = cursor.getInt(cursor.getColumnIndex("min_players"))
+            val maxPlayers = cursor.getInt(cursor.getColumnIndex("max_players"))
+            val playingTime = cursor.getInt(cursor.getColumnIndex("playing_time"))
             //zmienic image i thumbnail
-            val boardGame = Boardgame(id, title, originalTitle, yearPublished,image,thumbnail, bggId)
+            val boardGame = Boardgame(id, title, originalTitle, yearPublished,image,thumbnail, bggId,minPlayers,maxPlayers,playingTime)
             extensions.add(boardGame)
         }
         cursor.close()

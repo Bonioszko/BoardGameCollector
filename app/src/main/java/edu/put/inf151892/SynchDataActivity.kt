@@ -55,7 +55,10 @@ class SynchDataActivity : AppCompatActivity() {
                             //te dwa ponizej do zmiany
                             image = boardgame.image,
                             thumbnail = boardgame.thumbnail,
-                            bggId = boardgame.bggId
+                            bggId = boardgame.bggId,
+                            minPlayers = boardgame.minPlayers,
+                            maxPlayers = boardgame.maxPlayers,
+                            playingTime = boardgame.playingTime
 
 
                         )
@@ -75,7 +78,10 @@ class SynchDataActivity : AppCompatActivity() {
                             //te dwa ponizej do zmiany
                             image = extension.image,
                             thumbnail = extension.thumbnail,
-                            bggId = extension.bggId
+                            bggId = extension.bggId,
+                            minPlayers = extension.minPlayers,
+                            maxPlayers = extension.maxPlayers,
+                            playingTime = extension.playingTime
 
 
                         )

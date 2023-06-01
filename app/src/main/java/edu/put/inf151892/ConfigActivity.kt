@@ -44,13 +44,13 @@ class ConfigActivity : AppCompatActivity() {
             "username",
             ""
         ) +
-                "&subtype=boardgame&excludesubtype=boardgameexpansion"
+                "&subtype=boardgame&excludesubtype=boardgameexpansion&stats=1"
             val boardgamesList =  XmlParserTask().execute(url)
             var urlExtensions  = "https://boardgamegeek.com/xmlapi2/collection?username=" + cache.getString(
             "username",
             ""
         ) +
-                "&subtype=boardgameexpansion"
+                "&subtype=boardgameexpansion&stats=1"
             val extensionsList =  XmlParserTask().execute(urlExtensions)
             if (boardgamesList.get().isEmpty()){
                 Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
@@ -70,7 +70,10 @@ class ConfigActivity : AppCompatActivity() {
                             //te dwa ponizej do zmiany
                             image = boardgame.image,
                             thumbnail = boardgame.thumbnail,
-                            bggId = boardgame.bggId
+                            bggId = boardgame.bggId,
+                            minPlayers = boardgame.minPlayers,
+                            maxPlayers = boardgame.maxPlayers,
+                            playingTime = boardgame.playingTime
 
 
                         )
@@ -90,7 +93,10 @@ class ConfigActivity : AppCompatActivity() {
                                 //te dwa ponizej do zmiany
                                 image = extension.image,
                                 thumbnail = extension.thumbnail,
-                                bggId = extension.bggId
+                                bggId = extension.bggId,
+                                minPlayers = extension.minPlayers,
+                                maxPlayers = extension.maxPlayers,
+                                playingTime = extension.playingTime
 
 
                             )

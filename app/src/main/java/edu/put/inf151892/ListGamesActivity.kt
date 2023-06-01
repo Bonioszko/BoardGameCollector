@@ -29,6 +29,11 @@ class ListGamesActivity : AppCompatActivity() {
                 val intent = Intent(this@ListGamesActivity, GameDetailsActivity::class.java)
                 intent.putExtra("bggId",listOfGames[position].bggId )
                 intent.putExtra("image", listOfGames[position].image)
+                intent.putExtra("name", listOfGames[position].title)
+                intent.putExtra("minPlayers", listOfGames[position].minPlayers)
+                intent.putExtra("maxPlayers", listOfGames[position].maxPlayers)
+                intent.putExtra("yearPublished", listOfGames[position].yearPublished)
+                intent.putExtra("playingTime", listOfGames[position].playingTime)
                 startActivity(intent)
             }
         })
