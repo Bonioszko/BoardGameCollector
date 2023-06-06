@@ -27,6 +27,11 @@ class DlcActivity : AppCompatActivity() {
                     val intent = Intent(this@DlcActivity, GameDetailsActivity::class.java)
                     intent.putExtra("bggId",listOfExtensions[position].bggId )
                     intent.putExtra("image", listOfExtensions[position].image)
+                    intent.putExtra("name", listOfExtensions[position].title)
+                    intent.putExtra("minPlayers", listOfExtensions[position].minPlayers)
+                    intent.putExtra("maxPlayers", listOfExtensions[position].maxPlayers)
+                    intent.putExtra("yearPublished", listOfExtensions[position].yearPublished)
+                    intent.putExtra("playingTime", listOfExtensions[position].playingTime)
                     startActivity(intent)
                 }
             })

@@ -18,6 +18,8 @@ import com.google.android.material.internal.ContextUtils.getActivity
 
 import models.Boardgame
 import models.XmlParserTask
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 class ConfigActivity : AppCompatActivity() {
@@ -37,6 +39,11 @@ class ConfigActivity : AppCompatActivity() {
 
             cache.edit().putString("username",username).apply()
             cache.edit().putBoolean("confDone",true).apply()
+            val currentDate = LocalDate.now()
+            val dateString = currentDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).toString()
+            cache.edit().putString("syncDate", currentDate.format(
+                DateTimeFormatter.ofPattern("dd-MM-yyyy")).toString()).apply()
+
             val db = DBHandler(this)
 
             Log.d("msf",cache.getString("username", "").toString())
@@ -57,7 +64,7 @@ class ConfigActivity : AppCompatActivity() {
 
             }
             else{
-                var id= 0
+
 
                 for (boardgame in boardgamesList.get()){
 
@@ -78,7 +85,7 @@ class ConfigActivity : AppCompatActivity() {
 
                         )
                     )
-                    id+=1
+
 
 
                 }

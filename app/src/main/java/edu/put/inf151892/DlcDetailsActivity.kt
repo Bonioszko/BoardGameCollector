@@ -30,25 +30,27 @@ class DlcDetailsActivity : AppCompatActivity() {
         val bundle : Bundle? = intent.extras
         val bggId = bundle!!.getInt("bggId")
         val imageBundle = bundle.getString("image")
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val boardGameDetails = fetchBoardGameDetails(bggId.toString())
-            text.text = boardGameDetails.name
-            Glide.with(this@DlcDetailsActivity)
-                .load(imageBundle)
-                .apply(RequestOptions().centerCrop())
-                .into(image)
-            numberOfPlayers.append(boardGameDetails.minPlayers)
-            numberOfPlayers.append(" - ")
-            numberOfPlayers.append(boardGameDetails.maxPlayers)
-            released.append(boardGameDetails.yearPublished)
-            playingTime.append(boardGameDetails.playingTime)
-            playingTime.append(" min")
+        val playingTimeInt = bundle.getInt("playingTime")
+        val minPlayers = bundle.getInt("minPlayers")
+        val maxPlayers = bundle.getInt("maxPlayers")
+        val yearPublished = bundle.getInt("yearPublished")
+        val name = bundle.getString("name")
+        text.text = name
+        Glide.with(this).load(imageBundle)
+            .apply(RequestOptions()
+                .centerCrop())
+            .into(image)
+        numberOfPlayers.append(minPlayers.toString())
+        numberOfPlayers.append(" - ")
+        numberOfPlayers.append(maxPlayers.toString())
+        released.append(yearPublished.toString())
+        playingTime.append(playingTimeInt.toString())
+        playingTime.append(" min")
             // Now you can use the fetched board game details as needed
             // For example, you can access properties like boardGameDetails.name, boardGameDetails.thumbnail, etc.
         }
 
-    }
+
 
 
 

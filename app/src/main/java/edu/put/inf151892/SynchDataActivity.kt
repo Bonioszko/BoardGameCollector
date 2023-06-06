@@ -5,11 +5,15 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import models.Boardgame
 import models.XmlParserTask
+import java.time.LocalDate
 
 class SynchDataActivity : AppCompatActivity() {
+
+    private  lateinit var synchText: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_synch_data)
@@ -17,24 +21,27 @@ class SynchDataActivity : AppCompatActivity() {
         val progressBar: ProgressBar = findViewById(R.id.progressBar) // Znajdź ProgressBar na podstawie ID
         progressBar.progress = 0
         progressBar.max = 100
+        synchText = findViewById(R.id.synchText)
+        synchText.text = "Last synchronised: " + cache.getString("syncDate", "")
         val syncButton :Button = findViewById(R.id.sync)
         syncButton.setOnClickListener(){
             val db = DBHandler(this)
-
+            cache.edit().putString("synchDate", LocalDate.now().toString())
             db.deleteAllExtensions()
             db.deleteAllBoardGames()
             var url  = "https://boardgamegeek.com/xmlapi2/collection?username=" + cache.getString(
                 "username",
                 ""
             ) +
-                    "&subtype=boardgame&excludesubtype=boardgameexpansion"
+                    "&subtype=boardgame&excludesubtype=boardgameexpansion&stats=1"
+            cache.getString("username","")?.let { it1 -> Log.d("tag", it1) }
             val boardgamesList =  XmlParserTask().execute(url)
             progressBar.setProgress(25,true)
             var urlExtensions  = "https://boardgamegeek.com/xmlapi2/collection?username=" + cache.getString(
                 "username",
                 ""
             ) +
-                    "&subtype=boardgameexpansion"
+                    "&subtype=boardgameexpansion&stats=1"
             val extensionsList =  XmlParserTask().execute(urlExtensions)
             progressBar.setProgress(50,true)
             if (boardgamesList.get().isEmpty()){
@@ -42,7 +49,7 @@ class SynchDataActivity : AppCompatActivity() {
 
             }
             else{
-                var id= 0
+
 
                 for (boardgame in boardgamesList.get()){
 
@@ -63,7 +70,7 @@ class SynchDataActivity : AppCompatActivity() {
 
                         )
                     )
-                    id+=1
+
 
 
                 }
@@ -97,6 +104,8 @@ class SynchDataActivity : AppCompatActivity() {
 
                 db.close()
                 progressBar.setProgress(100,true)
+                Toast.makeText(this, "SYNCHRONIZATION DONE", Toast.LENGTH_SHORT).show()
+
         }
 
 

@@ -7,13 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
+import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
     private lateinit var gamesButton: Button
     private lateinit var dlcButton: Button
     private lateinit var synchButton: Button
     private lateinit var clearDataButton: Button
-    private lateinit var configButton: Button
+    private lateinit var userName: TextView
+    private lateinit var dlcCount: TextView
+    private lateinit var GamesCount:TextView
+    private lateinit var synchDate:TextView
+    //private lateinit var configButton: Button
 
 
     fun moveToGames(){
@@ -35,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         db.deleteAllBoardGames()
         db.deleteAllExtensions()
         cache.edit().putBoolean("confDone",false).apply()
+        cache.edit().putString("synchDate", "")
         finishAffinity()
     }
 
@@ -47,8 +54,24 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         else{
-            setContentView(R.layout.activity_main)
 
+            setContentView(R.layout.activity_main)
+            val db = DBHandler(this)
+            val dlcNumber =db.numberOfDlc()
+            val gameNumber = db.numberOfGames()
+            val username = cache.getString("username","")
+            val synchdate = cache.getString("syncDate","")
+            if (synchdate != null) {
+                Log.d("date", synchdate)
+            }
+            userName = findViewById(R.id.userName)
+            userName.text = "Username: " + username
+            synchDate = findViewById(R.id.dateSynch)
+            synchDate.append(synchdate)
+            GamesCount = findViewById(R.id.gameCounter)
+            GamesCount.append(gameNumber.toString())
+            dlcCount = findViewById(R.id.dlcCounter)
+            dlcCount.append(dlcNumber.toString())
             gamesButton = findViewById(R.id.gamesButton)
             gamesButton.setOnClickListener {
                 moveToGames()
@@ -61,11 +84,11 @@ class MainActivity : AppCompatActivity() {
             synchButton.setOnClickListener{
                 moveToSynch()
             }
-            configButton = findViewById(R.id.conifgButton)
-            configButton.setOnClickListener(){
-                val intent = Intent(this, ConfigActivity::class.java)
-                startActivity(intent)
-            }
+            //configButton = findViewById(R.id.conifgButton)
+           // configButton.setOnClickListener(){
+                //val intent = Intent(this, ConfigActivity::class.java)
+                //startActivity(intent)
+            //}
             clearDataButton = findViewById(R.id.clearDataButton)
             clearDataButton.setOnClickListener(){
             clearData()

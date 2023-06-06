@@ -152,6 +152,24 @@ class DBHandler  // creating a constructor for our database handler.
         cursor.close()
         return extensions
     }
+    fun numberOfDlc(): Int{
+        val db = this.writableDatabase
+        val cursor: Cursor = db.rawQuery("SELECT COUNT(*) FROM extension", null)
+        cursor.moveToFirst()
+        val count = cursor.getInt(0)
+        cursor.close()
+        return count
+
+    }
+    fun numberOfGames(): Int{
+        val db = this.writableDatabase
+        val cursor: Cursor = db.rawQuery("SELECT COUNT(*) FROM boardgame", null)
+        cursor.moveToFirst()
+        val count = cursor.getInt(0)
+        cursor.close()
+        return count
+
+    }
 
 
 }
