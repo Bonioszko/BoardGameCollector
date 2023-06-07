@@ -3,6 +3,7 @@ package edu.put.inf151892
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import models.Boardgame
@@ -16,6 +17,9 @@ class DlcActivity : AppCompatActivity() {
             setContentView(R.layout.activity_list_games)
             val db = DBHandler(this)
             var listOfExtensions = db.getAllExtensions()
+            if(listOfExtensions.isEmpty()){
+                Toast.makeText(this, "User does not have DLC", Toast.LENGTH_SHORT).show()
+            }
             //val url ="https://boardgamegeek.com/xmlapi2/collection?username=rahdo"
             //var text = XmlParserTask().execute(url)
             val recyclerview = findViewById<RecyclerView>(R.id.RecyclerViewGames)

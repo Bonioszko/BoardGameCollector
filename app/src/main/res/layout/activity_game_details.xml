@@ -175,13 +175,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginHorizontal="5dp"
         android:id="@+id/imageFullScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:layout_marginHorizontal="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="5dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

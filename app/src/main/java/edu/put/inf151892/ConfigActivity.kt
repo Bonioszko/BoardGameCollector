@@ -18,6 +18,7 @@ import com.google.android.material.internal.ContextUtils.getActivity
 
 import models.Boardgame
 import models.XmlParserTask
+import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -43,7 +44,7 @@ class ConfigActivity : AppCompatActivity() {
             val dateString = currentDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")).toString()
             cache.edit().putString("syncDate", currentDate.format(
                 DateTimeFormatter.ofPattern("dd-MM-yyyy")).toString()).apply()
-
+            cache.edit().putLong("syncDateLong", Instant.now().toEpochMilli()).apply()
             val db = DBHandler(this)
 
             Log.d("msf",cache.getString("username", "").toString())

@@ -8,6 +8,12 @@
     tools:context=".DlcDetailsActivity"
     android:background="@color/darkGray">
 
+    <ImageView
+        android:id="@+id/fullImage"
+        android:layout_width="410dp"
+        android:layout_height="737dp"
+        app:srcCompat="@android:drawable/list_selector_background" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
