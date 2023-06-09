@@ -56,7 +56,14 @@ class DBHandler  // creating a constructor for our database handler.
         db?.execSQL(CREATE_TABLE_EXTENSION)
 
 
-    }
+
+    val CREATE_TABLE_IMAGES =  "CREATE TABLE IF NOT EXISTS images" +
+            "(bgg_id INTEGER," +
+            " image TEXT)"
+
+        db?.execSQL(CREATE_TABLE_IMAGES)
+
+}
 
 
 
@@ -64,8 +71,15 @@ class DBHandler  // creating a constructor for our database handler.
         // this method is called to check if the table exists already.
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
         db.execSQL("DROP TABLE IF EXISTS " +"extension")
+        db.execSQL("DROP TABLE IF EXISTS " +"images")
         onCreate(db)
     }
+    fun addImage( id: Int, image: String){
+        val values = ContentValues()
+        values.put("bgg_id", id)
+        values.put("image", image)
+    }
+
     fun addBoardGame(boardgame: Boardgame){
         val values = ContentValues()
         values.put("title", boardgame.title)
@@ -105,6 +119,10 @@ class DBHandler  // creating a constructor for our database handler.
         val db = this.writableDatabase
         db.delete("extension",null,null)
     }
+    fun deleteAllImages(){
+        val db = this.writableDatabase
+        db.delete("images",null,null)
+    }
     @SuppressLint("Range")
     fun getAllBoardGames(): List<Boardgame> {
         val db = this.writableDatabase
@@ -129,6 +147,18 @@ class DBHandler  // creating a constructor for our database handler.
         return boardGames
     }
 
+    @SuppressLint("Range")
+    fun getImages(id: Int):List<String>{
+        val db = this.writableDatabase
+        val images = mutableListOf<String>()
+        val cursor: Cursor = db.rawQuery("SELECT * FROM images where bgg_id = id", null)
+        while (cursor.moveToNext()){
+            val title = cursor.getString(cursor.getColumnIndex("image"))
+            images.add(title)
+        }
+        cursor.close()
+        return images
+    }
     @SuppressLint("Range")
     fun getAllExtensions(): List<Boardgame> {
         val db = this.writableDatabase
