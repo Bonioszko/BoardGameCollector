@@ -20,8 +20,7 @@ class DlcActivity : AppCompatActivity() {
             if(listOfExtensions.isEmpty()){
                 Toast.makeText(this, "User does not have DLC", Toast.LENGTH_SHORT).show()
             }
-            //val url ="https://boardgamegeek.com/xmlapi2/collection?username=rahdo"
-            //var text = XmlParserTask().execute(url)
+
             val recyclerview = findViewById<RecyclerView>(R.id.RecyclerViewGames)
             recyclerview.layoutManager = LinearLayoutManager(this)
             val adapter = Boardgame_RecylerViewAdapter(listOfExtensions)

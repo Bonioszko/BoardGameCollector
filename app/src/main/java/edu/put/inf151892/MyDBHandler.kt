@@ -25,7 +25,7 @@ class DBHandler  // creating a constructor for our database handler.
 
 
     }
-    // below method is for creating a database by running a sqlite query
+
     override fun onCreate(db: SQLiteDatabase) {
 
         val CREATE_TABLE_BOARDGAME = "CREATE TABLE IF NOT EXISTS boardgame " +
@@ -149,7 +149,7 @@ class DBHandler  // creating a constructor for our database handler.
             val minPlayers = cursor.getInt(cursor.getColumnIndex("min_players"))
             val maxPlayers = cursor.getInt(cursor.getColumnIndex("max_players"))
             val playingTime = cursor.getInt(cursor.getColumnIndex("playing_time"))
-            //zmienic image i thumbnail
+
             val boardGame = Boardgame(id, title, originalTitle, yearPublished,image, thumbnail , bggId, minPlayers,maxPlayers,playingTime)
             boardGames.add(boardGame)
         }

@@ -120,7 +120,7 @@ class ConfigActivity : AppCompatActivity() {
 
                 db.close()
 
-                //val extension =db.getAllExtensions()
+
 
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

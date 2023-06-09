@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import models.BoardGameDetails
-import models.BoardGameDetailsParser
+
 import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
@@ -126,6 +126,14 @@ class GameDetailsActivity : AppCompatActivity() {
         playingTime.append(" min")
         del.setOnClickListener{
             db.deleteImagesforGame(bggId)
+            Glide.with(this).load(imageBundle)
+                .apply(RequestOptions()
+                    .centerCrop())
+                .into(image)
+            Glide.with(this).load(imageBundle)
+                .apply(RequestOptions()
+                    .centerCrop())
+                .into(fullImage)
         }
         image.setOnClickListener{
             Log.d("tag","cos")
@@ -179,9 +187,6 @@ class GameDetailsActivity : AppCompatActivity() {
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
-
-
-
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }

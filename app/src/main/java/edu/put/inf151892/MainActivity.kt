@@ -19,8 +19,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dlcCount: TextView
     private lateinit var GamesCount:TextView
     private lateinit var synchDate:TextView
-    //private lateinit var configButton: Button
-
 
     fun moveToGames(){
         val intent = Intent(this, ListGamesActivity::class.java)
@@ -85,11 +83,7 @@ class MainActivity : AppCompatActivity() {
             synchButton.setOnClickListener{
                 moveToSynch()
             }
-            //configButton = findViewById(R.id.conifgButton)
-           // configButton.setOnClickListener(){
-                //val intent = Intent(this, ConfigActivity::class.java)
-                //startActivity(intent)
-            //}
+
             clearDataButton = findViewById(R.id.clearDataButton)
             clearDataButton.setOnClickListener(){
             clearData()
