@@ -51,22 +51,18 @@ class ConfigActivity : AppCompatActivity() {
             var url  = "https://boardgamegeek.com/xmlapi2/collection?username=" + cache.getString(
             "username",
             ""
-        ) +
-                "&subtype=boardgame&excludesubtype=boardgameexpansion&stats=1"
+        ) +"&subtype=boardgame&excludesubtype=boardgameexpansion&stats=1"
             val boardgamesList =  XmlParserTask().execute(url)
             var urlExtensions  = "https://boardgamegeek.com/xmlapi2/collection?username=" + cache.getString(
             "username",
             ""
-        ) +
-                "&subtype=boardgameexpansion&stats=1"
+        ) +"&subtype=boardgameexpansion&stats=1"
             val extensionsList =  XmlParserTask().execute(urlExtensions)
             if (boardgamesList.get().isEmpty()){
                 Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
 
             }
             else{
-
-
                 for (boardgame in boardgamesList.get()){
 
                     db.addBoardGame(
@@ -86,9 +82,6 @@ class ConfigActivity : AppCompatActivity() {
 
                         )
                     )
-
-
-
                 }
 
                     for (extension in extensionsList.get()){
@@ -110,29 +103,13 @@ class ConfigActivity : AppCompatActivity() {
                             )
                         )
 
-
-
-
-
-
                 }
-
-
                 db.close()
-
-
 
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
-
             }
-
-
         }
-
-
-
-
 
 
     }

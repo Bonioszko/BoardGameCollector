@@ -56,7 +56,7 @@ class GameDetailsActivity : AppCompatActivity() {
     private val pickImage = 100
     private var imageUri: Uri? = null
     var db = DBHandler(this)
-    lateinit var images: MutableList <String>
+    private lateinit var images: MutableList <String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -87,59 +87,55 @@ class GameDetailsActivity : AppCompatActivity() {
         val maxPlayers = bundle.getInt("maxPlayers")
         val yearPublished = bundle.getInt("yearPublished")
         val name = bundle.getString("name")
-        var current = 1
+        var current = 0
 
         viewBinding.btnAdd.setOnClickListener { takePhoto(bggId) }
         cameraExecutor = Executors.newSingleThreadExecutor()
         setupCamera()
-        images = db.getImages(bggId)
-        next.setOnClickListener{
+        images = mutableListOf(" ")
+        next.setOnClickListener {
 
-            if (current<1 || (current >= images.size -1)){
+            current += 1
+            Log.d("current", current.toString())
+            if (current >= images.size) {
+                current = 0 // Reset to the first image if it exceeds the list size
+            }
+
+            if (current == 0) {
                 Glide.with(this).load(imageBundle)
-                    .apply(RequestOptions()
-                        .centerCrop())
+                    .apply(RequestOptions().centerCrop())
                     .into(image)
                 Glide.with(this).load(imageBundle)
-                    .apply(RequestOptions()
-                        .centerCrop())
+                    .apply(RequestOptions().centerCrop())
                     .into(fullImage)
-                current=1
-            }
-            else{
-
+            } else {
                 val imageCurrent = images[current]
-
                 image.setImageURI(imageCurrent.toUri())
                 fullImage.setImageURI(imageCurrent.toUri())
-                current+=1
+            }
+        }
+        prev.setOnClickListener {
 
+            current -= 1
+            Log.d("currentprev", current.toString())
+            if (current < 0) {
+                current = images.size - 1 // Set the index to the last image if it becomes negative
             }
 
-        }
-        prev.setOnClickListener{
-            Log.d("current",current.toString())
-            if (current<=1|| (current >=images.size -1)){
+            if (current == 0) {
                 Glide.with(this).load(imageBundle)
-                    .apply(RequestOptions()
-                        .centerCrop())
+                    .apply(RequestOptions().centerCrop())
                     .into(image)
                 Glide.with(this).load(imageBundle)
-                    .apply(RequestOptions()
-                        .centerCrop())
+                    .apply(RequestOptions().centerCrop())
                     .into(fullImage)
-                current = images.size -1
-            }
-            else{
-
+            } else {
                 val imageCurrent = images[current]
-                Log.d("current",images.size.toString() )
                 image.setImageURI(imageCurrent.toUri())
                 fullImage.setImageURI(imageCurrent.toUri())
-                current-1
-
             }
         }
+//
         text.text = name
         Glide.with(this).load(imageBundle)
             .apply(RequestOptions()
@@ -165,8 +161,8 @@ class GameDetailsActivity : AppCompatActivity() {
                 .apply(RequestOptions()
                     .centerCrop())
                 .into(fullImage)
-            db.getImages(bggId)
-            current =1
+            images = mutableListOf(" ")
+            current =0
         }
         image.setOnClickListener{
             Log.d("tag","cos")
@@ -234,7 +230,7 @@ class GameDetailsActivity : AppCompatActivity() {
     private fun takePhoto(bggId: Int) { // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
         viewBinding.viewFinder.visibility = View.VISIBLE
-        // Create time stamped name and MediaStore entry.
+
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
@@ -252,8 +248,7 @@ class GameDetailsActivity : AppCompatActivity() {
                 contentValues)
             .build()
 
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
+
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
@@ -271,6 +266,7 @@ class GameDetailsActivity : AppCompatActivity() {
                     val uri = output.savedUri
                     db.addImage(bggId, uri.toString())
                     images = db.getImages(bggId)
+                    images.add(0,"")
                     image.setImageURI(uri)
                     fullImage.setImageURI(uri)
                     Log.d(TAG, msg)

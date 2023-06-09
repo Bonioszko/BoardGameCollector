@@ -6,50 +6,6 @@ import org.w3c.dom.Element
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-
-//class XmlParser {
-//
-//
-//    fun parseXML(xmlString: String): List<Boardgame> {
-//        val factory = DocumentBuilderFactory.newInstance()
-//        val builder = factory.newDocumentBuilder()
-//        val document = builder.parse(xmlString)
-//
-//        document.documentElement.normalize()
-//
-//        val rootElement = document.documentElement
-//        val boardGameElements = rootElement.getElementsByTagName("item")
-//
-//        val boardGames = mutableListOf<Boardgame>()
-//        for (i in 0 until boardGameElements.length) {
-//            val boardGameElement = boardGameElements.item(i) as Element
-//            val boardGame = processElement(boardGameElement)
-//            boardGames.add(boardGame)
-//        }
-//
-//        return boardGames
-//    }
-//
-//    fun processElement(element: Element): Boardgame {
-//
-//
-//        val nameElement = element.getElementsByTagName("name").item(0)
-//        val name = nameElement?.textContent ?: ""
-//
-//        val yearPublishedElement = element.getElementsByTagName("yearpublished").item(0)
-//        val yearPublished = yearPublishedElement?.textContent?.toIntOrNull() ?: 0
-//
-//        val imageElement = element.getElementsByTagName("image").item(0)
-//        val image = imageElement?.textContent ?: ""
-//
-//        val thumbnailElement = element.getElementsByTagName("thumbnail").item(0)
-//        val thumbnail = thumbnailElement?.textContent ?: ""
-//
-//        val id = element.getAttribute("objectid").toInt()
-//
-//        return Boardgame(id,name,name,yearPublished,image,thumbnail, id)
-//    }
-//    }
 class XmlParserTask : AsyncTask<String, Void, List<Boardgame>>() {
 
     override fun doInBackground(vararg urls: String?): List<Boardgame> {
@@ -85,25 +41,16 @@ class XmlParserTask : AsyncTask<String, Void, List<Boardgame>>() {
                 val id = elem.getAttribute("objectid").toInt()
                 val nameElement = elem.getElementsByTagName("name").item(0)
                 val name = nameElement?.textContent ?: ""
-
                 val game = elem.getElementsByTagName("stats").item(0) as org.w3c.dom.Element
-
                 val yearPublishedElement = elem.getElementsByTagName("yearpublished").item(0)
                 val yearPublished = yearPublishedElement?.textContent?.toIntOrNull() ?: 0
-
                 val imageElement = elem.getElementsByTagName("image").item(0)
                 val image = imageElement?.textContent ?: ""
-
                 val thumbnailElement = elem.getElementsByTagName("thumbnail").item(0)
                 val thumbnail = thumbnailElement?.textContent ?: ""
-
                 val minPlayers = game.getAttribute("minplayers").toIntOrNull() ?: 0
-
                 val maxPlayers = game.getAttribute("maxplayers").toIntOrNull() ?: 0
-
                 val playingTime = game.getAttribute("playingtime").toIntOrNull() ?: 0
-
-
                 val boardGame = Boardgame(
                     id,
                     name,
@@ -115,7 +62,6 @@ class XmlParserTask : AsyncTask<String, Void, List<Boardgame>>() {
                     minPlayers,
                     maxPlayers,
                     playingTime,
-
                 )
                 boardGames.add(boardGame)
             }

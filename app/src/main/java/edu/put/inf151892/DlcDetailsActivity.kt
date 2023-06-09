@@ -13,8 +13,6 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 
@@ -36,15 +34,14 @@ import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 
 import androidx.camera.core.ImageCaptureException
+import androidx.core.net.toUri
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 
 class DlcDetailsActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityGameDetailsBinding
     private var imageCapture: ImageCapture? = null
-
-    private var videoCapture: VideoCapture<Recorder>? = null
-    private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var text:TextView
@@ -54,10 +51,12 @@ class DlcDetailsActivity : AppCompatActivity() {
     private lateinit var playingTime: TextView
     private lateinit var fullImage: ImageView
     private lateinit var prev: Button
+    private lateinit var next : Button
+    private lateinit var del:Button
     private val pickImage = 100
     private var imageUri: Uri? = null
     var db = DBHandler(this)
-    lateinit var images: MutableList <String>
+    private lateinit var images: MutableList <String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -70,12 +69,6 @@ class DlcDetailsActivity : AppCompatActivity() {
         } else {
             requestPermissions()
         }
-
-
-
-
-
-
         text= findViewById(R.id.titleText)
         image = findViewById(R.id.imageView)
         numberOfPlayers = findViewById(R.id.numberOfPlayers)
@@ -83,6 +76,8 @@ class DlcDetailsActivity : AppCompatActivity() {
         playingTime = findViewById(R.id.playingTime)
         fullImage = findViewById(R.id.imageFullScreen)
         prev = findViewById(R.id.btnPrev)
+        del = findViewById(R.id.btnDelete)
+        next = findViewById(R.id.btnNext)
 
         val bundle : Bundle? = intent.extras
         val bggId = bundle!!.getInt("bggId")
@@ -92,11 +87,55 @@ class DlcDetailsActivity : AppCompatActivity() {
         val maxPlayers = bundle.getInt("maxPlayers")
         val yearPublished = bundle.getInt("yearPublished")
         val name = bundle.getString("name")
+        var current = 0
+
         viewBinding.btnAdd.setOnClickListener { takePhoto(bggId) }
         cameraExecutor = Executors.newSingleThreadExecutor()
         setupCamera()
-        images = db.getImages(bggId)
+        images = mutableListOf(" ")
+        next.setOnClickListener {
 
+            current += 1
+            Log.d("current", current.toString())
+            if (current >= images.size) {
+                current = 0 // Reset to the first image if it exceeds the list size
+            }
+
+            if (current == 0) {
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions().centerCrop())
+                    .into(image)
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions().centerCrop())
+                    .into(fullImage)
+            } else {
+                val imageCurrent = images[current]
+                image.setImageURI(imageCurrent.toUri())
+                fullImage.setImageURI(imageCurrent.toUri())
+            }
+        }
+        prev.setOnClickListener {
+
+            current -= 1
+            Log.d("currentprev", current.toString())
+            if (current < 0) {
+                current = images.size - 1 // Set the index to the last image if it becomes negative
+            }
+
+            if (current == 0) {
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions().centerCrop())
+                    .into(image)
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions().centerCrop())
+                    .into(fullImage)
+            } else {
+                val imageCurrent = images[current]
+                image.setImageURI(imageCurrent.toUri())
+                fullImage.setImageURI(imageCurrent.toUri())
+            }
+        }
+//
         text.text = name
         Glide.with(this).load(imageBundle)
             .apply(RequestOptions()
@@ -112,6 +151,19 @@ class DlcDetailsActivity : AppCompatActivity() {
         released.append(yearPublished.toString())
         playingTime.append(playingTimeInt.toString())
         playingTime.append(" min")
+        del.setOnClickListener{
+            db.deleteImagesforGame(bggId)
+            Glide.with(this).load(imageBundle)
+                .apply(RequestOptions()
+                    .centerCrop())
+                .into(image)
+            Glide.with(this).load(imageBundle)
+                .apply(RequestOptions()
+                    .centerCrop())
+                .into(fullImage)
+            images = mutableListOf(" ")
+            current =0
+        }
         image.setOnClickListener{
             Log.d("tag","cos")
 
@@ -122,11 +174,6 @@ class DlcDetailsActivity : AppCompatActivity() {
             fullImage.visibility = View.GONE
         }
 
-        prev.setOnClickListener{
-            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            startActivityForResult(gallery, pickImage)
-        }
-//
 
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,14 +211,9 @@ class DlcDetailsActivity : AppCompatActivity() {
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
-
-
-
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-
-
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -224,8 +266,8 @@ class DlcDetailsActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     val uri = output.savedUri
                     db.addImage(bggId, uri.toString())
-
                     images = db.getImages(bggId)
+                    images.add(0,"")
                     image.setImageURI(uri)
                     fullImage.setImageURI(uri)
                     Log.d(TAG, msg)
@@ -270,20 +312,7 @@ class DlcDetailsActivity : AppCompatActivity() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
-    private fun rotateAndSetImage(uri: Uri) {
-        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-        val rotatedBitmap = rotateBitmap(bitmap, 90f) // Rotate by 90 degrees
 
-        // Set the rotated bitmap in the ImageView
-        image.setImageBitmap(rotatedBitmap)
-    }
-
-    // Function to rotate the bitmap image by the specified angle
-    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
-        val matrix = Matrix()
-        matrix.postRotate(degrees)
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
 
 
 
