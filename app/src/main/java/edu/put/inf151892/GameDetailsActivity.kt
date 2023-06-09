@@ -1,6 +1,5 @@
 package edu.put.inf151892
 
-import android.media.AsyncPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,14 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import models.BoardGameDetails
 
 import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 
@@ -27,7 +23,6 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import edu.put.inf151892.databinding.ActivityGameDetailsBinding
 import java.util.concurrent.ExecutorService
@@ -38,29 +33,15 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
-import androidx.camera.video.FallbackStrategy
-import androidx.camera.video.MediaStoreOutputOptions
-import androidx.camera.video.Quality
-import androidx.camera.video.QualitySelector
-import androidx.camera.video.VideoRecordEvent
-import androidx.core.content.PermissionChecker
-import androidx.core.view.isVisible
-import java.nio.ByteBuffer
+import androidx.core.net.toUri
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 typealias LumaListener = (luma: Double) -> Unit
 class GameDetailsActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityGameDetailsBinding
     private var imageCapture: ImageCapture? = null
-
-    private var videoCapture: VideoCapture<Recorder>? = null
-    private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var text:TextView
@@ -70,6 +51,7 @@ class GameDetailsActivity : AppCompatActivity() {
     private lateinit var playingTime: TextView
     private lateinit var fullImage: ImageView
     private lateinit var prev: Button
+    private lateinit var next : Button
     private lateinit var del:Button
     private val pickImage = 100
     private var imageUri: Uri? = null
@@ -95,6 +77,8 @@ class GameDetailsActivity : AppCompatActivity() {
         fullImage = findViewById(R.id.imageFullScreen)
         prev = findViewById(R.id.btnPrev)
          del = findViewById(R.id.btnDelete)
+        next = findViewById(R.id.btnNext)
+
         val bundle : Bundle? = intent.extras
         val bggId = bundle!!.getInt("bggId")
         val imageBundle = bundle.getString("image")
@@ -103,12 +87,59 @@ class GameDetailsActivity : AppCompatActivity() {
         val maxPlayers = bundle.getInt("maxPlayers")
         val yearPublished = bundle.getInt("yearPublished")
         val name = bundle.getString("name")
+        var current = 1
 
         viewBinding.btnAdd.setOnClickListener { takePhoto(bggId) }
         cameraExecutor = Executors.newSingleThreadExecutor()
         setupCamera()
         images = db.getImages(bggId)
+        next.setOnClickListener{
 
+            if (current<1 || (current >= images.size -1)){
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions()
+                        .centerCrop())
+                    .into(image)
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions()
+                        .centerCrop())
+                    .into(fullImage)
+                current=1
+            }
+            else{
+
+                val imageCurrent = images[current]
+
+                image.setImageURI(imageCurrent.toUri())
+                fullImage.setImageURI(imageCurrent.toUri())
+                current+=1
+
+            }
+
+        }
+        prev.setOnClickListener{
+            Log.d("current",current.toString())
+            if (current<=1|| (current >=images.size -1)){
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions()
+                        .centerCrop())
+                    .into(image)
+                Glide.with(this).load(imageBundle)
+                    .apply(RequestOptions()
+                        .centerCrop())
+                    .into(fullImage)
+                current = images.size -1
+            }
+            else{
+
+                val imageCurrent = images[current]
+                Log.d("current",images.size.toString() )
+                image.setImageURI(imageCurrent.toUri())
+                fullImage.setImageURI(imageCurrent.toUri())
+                current-1
+
+            }
+        }
         text.text = name
         Glide.with(this).load(imageBundle)
             .apply(RequestOptions()
@@ -134,6 +165,8 @@ class GameDetailsActivity : AppCompatActivity() {
                 .apply(RequestOptions()
                     .centerCrop())
                 .into(fullImage)
+            db.getImages(bggId)
+            current =1
         }
         image.setOnClickListener{
             Log.d("tag","cos")
@@ -145,11 +178,6 @@ class GameDetailsActivity : AppCompatActivity() {
             fullImage.visibility = View.GONE
         }
 
-        prev.setOnClickListener{
-            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            startActivityForResult(gallery, pickImage)
-        }
-//
 
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -190,8 +218,6 @@ class GameDetailsActivity : AppCompatActivity() {
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-
-
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -244,7 +270,6 @@ class GameDetailsActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     val uri = output.savedUri
                     db.addImage(bggId, uri.toString())
-
                     images = db.getImages(bggId)
                     image.setImageURI(uri)
                     fullImage.setImageURI(uri)

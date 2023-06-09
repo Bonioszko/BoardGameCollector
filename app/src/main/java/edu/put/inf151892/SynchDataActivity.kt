@@ -95,7 +95,7 @@ class SynchDataActivity : AppCompatActivity() {
                                     title = extension.title,
                                     originalTitle = extension.originalTitle,
                                     yearPublished = extension.yearPublished,
-                                    //te dwa ponizej do zmiany
+
                                     image = extension.image,
                                     thumbnail = extension.thumbnail,
                                     bggId = extension.bggId,

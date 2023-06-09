@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         db.deleteAllImages()
         cache.edit().putBoolean("confDone",false).apply()
         cache.edit().putString("synchDate", "")
+        revokeUriPermission(null, 0)
         finishAffinity()
     }
 

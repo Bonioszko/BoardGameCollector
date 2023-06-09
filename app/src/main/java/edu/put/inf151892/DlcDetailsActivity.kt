@@ -1,6 +1,5 @@
 package edu.put.inf151892
 
-import android.media.AsyncPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import models.BoardGameDetails
 
 import android.Manifest
 import android.content.ContentValues
@@ -27,7 +25,6 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import edu.put.inf151892.databinding.ActivityGameDetailsBinding
 import java.util.concurrent.ExecutorService
@@ -38,22 +35,9 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
-import androidx.camera.video.FallbackStrategy
-import androidx.camera.video.MediaStoreOutputOptions
-import androidx.camera.video.Quality
-import androidx.camera.video.QualitySelector
-import androidx.camera.video.VideoRecordEvent
-import androidx.core.content.PermissionChecker
-import androidx.core.view.isVisible
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class DlcDetailsActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityGameDetailsBinding
@@ -142,22 +126,7 @@ class DlcDetailsActivity : AppCompatActivity() {
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
         }
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val boardGameDetails = fetchBoardGameDetails(bggId.toString())
-//            text.text = boardGameDetails.name
-//            Glide.with(this@GameDetailsActivity)
-//                .load(imageBundle)
-//                .apply(RequestOptions().centerCrop())
-//                .into(image)
-//            numberOfPlayers.append(boardGameDetails.minPlayers)
-//            numberOfPlayers.append(" - ")
-//            numberOfPlayers.append(boardGameDetails.maxPlayers)
-//            released.append(boardGameDetails.yearPublished)
-//            playingTime.append(boardGameDetails.playingTime)
-//            playingTime.append(" min")
-//            // Now you can use the fetched board game details as needed
-//            // For example, you can access properties like boardGameDetails.name, boardGameDetails.thumbnail, etc.
-//        }
+//
 
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
