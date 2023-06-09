@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         val db = DBHandler(this)
         db.deleteAllBoardGames()
         db.deleteAllExtensions()
+        db.deleteAllImages()
         cache.edit().putBoolean("confDone",false).apply()
         cache.edit().putString("synchDate", "")
         finishAffinity()

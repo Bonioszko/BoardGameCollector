@@ -57,7 +57,7 @@ class DBHandler  // creating a constructor for our database handler.
 
 
 
-    val CREATE_TABLE_IMAGES =  "CREATE TABLE IF NOT EXISTS images" +
+     val CREATE_TABLE_IMAGES =  "CREATE TABLE IF NOT EXISTS images" +
             "(bgg_id INTEGER," +
             " image TEXT)"
 
@@ -78,6 +78,9 @@ class DBHandler  // creating a constructor for our database handler.
         val values = ContentValues()
         values.put("bgg_id", id)
         values.put("image", image)
+        val db = this.writableDatabase
+        db.insert("images",null,values)
+        db.close()
     }
 
     fun addBoardGame(boardgame: Boardgame){
@@ -123,6 +126,13 @@ class DBHandler  // creating a constructor for our database handler.
         val db = this.writableDatabase
         db.delete("images",null,null)
     }
+    fun deleteImagesforGame(id: Int){
+        val db = this.writableDatabase
+        val whereClause = "bgg_id = ?"
+        val whereArgs = arrayOf(id.toString())
+        db.delete("images", whereClause, whereArgs)
+        db.close()
+    }
     @SuppressLint("Range")
     fun getAllBoardGames(): List<Boardgame> {
         val db = this.writableDatabase
@@ -148,10 +158,10 @@ class DBHandler  // creating a constructor for our database handler.
     }
 
     @SuppressLint("Range")
-    fun getImages(id: Int):List<String>{
+    fun getImages(id: Int):MutableList<String>{
         val db = this.writableDatabase
         val images = mutableListOf<String>()
-        val cursor: Cursor = db.rawQuery("SELECT * FROM images where bgg_id = id", null)
+        val cursor: Cursor = db.rawQuery("SELECT * FROM images where bgg_id = $id", null)
         while (cursor.moveToNext()){
             val title = cursor.getString(cursor.getColumnIndex("image"))
             images.add(title)

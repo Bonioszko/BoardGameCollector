@@ -15,6 +15,8 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 
@@ -45,6 +47,7 @@ import androidx.camera.video.Quality
 import androidx.camera.video.QualitySelector
 import androidx.camera.video.VideoRecordEvent
 import androidx.core.content.PermissionChecker
+import androidx.core.view.isVisible
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -67,8 +70,11 @@ class GameDetailsActivity : AppCompatActivity() {
     private lateinit var playingTime: TextView
     private lateinit var fullImage: ImageView
     private lateinit var prev: Button
+    private lateinit var del:Button
     private val pickImage = 100
     private var imageUri: Uri? = null
+    var db = DBHandler(this)
+    lateinit var images: MutableList <String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -81,12 +87,6 @@ class GameDetailsActivity : AppCompatActivity() {
         } else {
             requestPermissions()
         }
-        viewBinding.btnAdd.setOnClickListener { takePhoto() }
-
-
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
-        setupCamera()
         text= findViewById(R.id.titleText)
         image = findViewById(R.id.imageView)
         numberOfPlayers = findViewById(R.id.numberOfPlayers)
@@ -94,7 +94,7 @@ class GameDetailsActivity : AppCompatActivity() {
         playingTime = findViewById(R.id.playingTime)
         fullImage = findViewById(R.id.imageFullScreen)
         prev = findViewById(R.id.btnPrev)
-
+         del = findViewById(R.id.btnDelete)
         val bundle : Bundle? = intent.extras
         val bggId = bundle!!.getInt("bggId")
         val imageBundle = bundle.getString("image")
@@ -103,23 +103,33 @@ class GameDetailsActivity : AppCompatActivity() {
         val maxPlayers = bundle.getInt("maxPlayers")
         val yearPublished = bundle.getInt("yearPublished")
         val name = bundle.getString("name")
+
+        viewBinding.btnAdd.setOnClickListener { takePhoto(bggId) }
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        setupCamera()
+        images = db.getImages(bggId)
+
         text.text = name
         Glide.with(this).load(imageBundle)
             .apply(RequestOptions()
                 .centerCrop())
             .into(image)
+        Glide.with(this).load(imageBundle)
+            .apply(RequestOptions()
+                .centerCrop())
+            .into(fullImage)
         numberOfPlayers.append(minPlayers.toString())
         numberOfPlayers.append(" - ")
         numberOfPlayers.append(maxPlayers.toString())
         released.append(yearPublished.toString())
         playingTime.append(playingTimeInt.toString())
         playingTime.append(" min")
+        del.setOnClickListener{
+            db.deleteImagesforGame(bggId)
+        }
         image.setOnClickListener{
             Log.d("tag","cos")
-            Glide.with(this).load(imageBundle)
-                .apply(RequestOptions()
-                    .centerCrop())
-                .into(fullImage)
+
             fullImage.visibility = View.VISIBLE
 
         }
@@ -131,22 +141,7 @@ class GameDetailsActivity : AppCompatActivity() {
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
         }
-//        CoroutineScope(Dispatchers.Main).launch {
-//            val boardGameDetails = fetchBoardGameDetails(bggId.toString())
-//            text.text = boardGameDetails.name
-//            Glide.with(this@GameDetailsActivity)
-//                .load(imageBundle)
-//                .apply(RequestOptions().centerCrop())
-//                .into(image)
-//            numberOfPlayers.append(boardGameDetails.minPlayers)
-//            numberOfPlayers.append(" - ")
-//            numberOfPlayers.append(boardGameDetails.maxPlayers)
-//            released.append(boardGameDetails.yearPublished)
-//            playingTime.append(boardGameDetails.playingTime)
-//            playingTime.append(" min")
-//            // Now you can use the fetched board game details as needed
-//            // For example, you can access properties like boardGameDetails.name, boardGameDetails.thumbnail, etc.
-//        }
+//
 
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -160,6 +155,7 @@ class GameDetailsActivity : AppCompatActivity() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
+            viewBinding.viewFinder.visibility= View.GONE
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
@@ -184,9 +180,12 @@ class GameDetailsActivity : AppCompatActivity() {
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
 
+
+
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
+
 
         }, ContextCompat.getMainExecutor(this))
     }
@@ -201,9 +200,9 @@ class GameDetailsActivity : AppCompatActivity() {
             requestPermissions()
         }
     }
-    private fun takePhoto() { // Get a stable reference of the modifiable image capture use case
+    private fun takePhoto(bggId: Int) { // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
-
+        viewBinding.viewFinder.visibility = View.VISIBLE
         // Create time stamped name and MediaStore entry.
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
@@ -235,8 +234,17 @@ class GameDetailsActivity : AppCompatActivity() {
                 override fun
                         onImageSaved(output: ImageCapture.OutputFileResults){
                     val msg = "Photo capture succeeded: ${output.savedUri}"
+
+
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    val uri = output.savedUri
+                    db.addImage(bggId, uri.toString())
+
+                    images = db.getImages(bggId)
+                    image.setImageURI(uri)
+                    fullImage.setImageURI(uri)
                     Log.d(TAG, msg)
+                    viewBinding.viewFinder.visibility= View.GONE
                 }
             }
         )}
@@ -278,9 +286,7 @@ class GameDetailsActivity : AppCompatActivity() {
         cameraExecutor.shutdown()
     }
 
-    suspend fun fetchBoardGameDetails(gameId: String): BoardGameDetails {
-        val boardGameDetailsParser = BoardGameDetailsParser(gameId)
-        return boardGameDetailsParser.parse()
-    }
+
+
 
 }
